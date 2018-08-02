@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Harin Sanghirun</title>
+    <style media="screen">
+
+      body {
+        font-family: "Lato"
+      }
+
+      *:hover {
+        color: #ff3355;
+      }
+
+      *::selection {
+        background-color: #ff3355;
+        color: white;
+      }
+
+      #harin {
+        color: #a1a1a1;
+        line-height: 0.5em;
+      }
+      #sanghirun {
+        color: #eeeee5;
+      }
+      #sanghirun:hover {
+        color: #33ff55;
+      }
+
+      header {
+        height:10em;
+        display: flex;
+        flex-direction: row-reverse;
+        margin-right: 2em;
+        margin-bottom: 4em;
+      }
+
+      header h1 {
+        text-align: right;
+        font-size: 3em;
+        line-height: 1em;
+        font-weight: 400;
+      }
+      nav ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+      nav ul li {
+        padding: 0.7em;
+        font-size: 1.5em;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: #000000;
+      }
+
+      article {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      p {
+        max-width: 500px;
+        font-size: 1.2em;
+        color: #4f4f4f;
+      }
+      p:hover {
+        color: #4128F8;
+      }
+
+      #jitta {
+        text-decoration: none;
+        color: black;
+      }
+
+      #jitta:hover {
+        color: #47c6f1;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><span>harin</span><br><span id="sanghirun">sanghirun</span></h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="https://github.com/harin">Github</a></li>
+        <li><a href="https://www.linkedin.com/in/harinsa">LinkedIn</a></li>
+      </ul>
+    </nav>
+    <article id="about">
+      <p>Software Engineer at <a id="jitta" href="https://www.jitta.com">Jitta</a>. Responsible for the financial data analysis system. Interested in design; industrial and software.</p>
+      <p>Work primarily with javascript these days, but dabble with python once in a while since everyone concerning data seems to be using it.</p>
+    </article>
+  </body>
+</html>
