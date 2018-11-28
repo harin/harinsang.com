@@ -14,68 +14,74 @@
 
     <meta charset="utf-8">
     <title>Harin Sanghirun</title>
-    <style media="screen">
-
-      body {
-        font-family: "Lato"
+    <link rel="stylesheet" href="normalize.css" type="text/css"/>
+    <link rel="stylesheet" href="skeleton.css" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <style>
+      * {
+        font-family: 'Raleway', Arial, Helvetica, sans-serif
+      }
+      #name {
+        font-weight: 300;
+        font-size: 4rem;
+        color: #222;
       }
 
-      header {
-        height:10em;
-        display: flex;
-        flex-direction: row-reverse;
-        margin-right: 2em;
-        margin-bottom: 4em;
+      .hero {
+        margin: 9rem 0 1rem 0;
       }
 
-      header h1 {
-        text-align: right;
-        font-size: 3em;
-        line-height: 1em;
-        font-weight: 400;
-      }
-      nav ul {
-        list-style: none;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-      nav ul li {
-        padding: 0.7em;
-        font-size: 1.5em;
-      }
-      nav ul li a {
-        text-decoration: none;
-        color: #000000;
+      #harin {
+        border-radius: 50%;
+        margin: 0 2rem;
       }
 
-      article {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      h2 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #222;
       }
-      p {
-        max-width: 500px;
-        font-size: 1.2em;
-        color: #4f4f4f;
+
+      ul {
+        line-height: 1.8rem;
       }
+      
+      a {
+        font-weight: 600;
+      }
+
+      #about {
+        padding-left: 1rem;
+      }
+
     </style>
   </head>
   <body>
-    <header>
-      <h1><span>harin</span><br><span id="sanghirun">sanghirun</span></h1>
-    </header>
-    <nav>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="https://github.com/harin">Github</a></li>
-        <li><a href="https://www.linkedin.com/in/harinsa">LinkedIn</a></li>
-      </ul>
-    </nav>
-    <article id="about">
-      <p>Studying Data Science at Columbia University in the City of New York</p>
-      <p>Former Software Engineer at <a id="jitta" href="https://www.jitta.com">Jitta</a>. Responsible for the financial data analysis system. Interested in design; industrial and software.</p>
-      <p>Work primarily with javascript these days, but dabble with python once in a while since everyone concerning data seems to be using it.</p>
-    </article>
+    <div class="container">
+      <div class="section hero row">
+        <h1 id="name">Harin Sanghirun</h1>
+      </div>
+      <!-- columns should be the immediate child of a .row -->
+      <div class="row">
+        <div class="three columns sidebar">
+          <img id="harin" class="u-max-full-width" src="2018_1128_11222400.jpg"/>
+          <h2>Links</h2>
+          <ul>
+            <li><a href="https://github.com/harin" target="_blank"><span>github</span></a></li>
+            <li><a href="https://linkedin.com/in/harinsa" target="_blank"><span>linkedin</span></a></li>
+            <li><a href="https://kaggle.com/harinsa" target="_blank"><span>kaggle</span></a></li>
+          </ul>
+        </div>
+        <div class="nine columns" id="about">
+          <h2>About</h2>
+            <article>
+              <p><span style="font-weight: 600;">Master of Data Science</span> student at <span style="text-decoration: underline">Columbia University</span> in the City of New York</p>
+              <p>Former <span style="font-weight: 600;">Fullstack Software Engineer</span> at <a id="jita" href="https://www.jitta.com" target="_blank">Jitta</a>. Responsible for the financial data analysis system.</p>
+              <p>Mostly work with Python and R these days, worked with various other languages that are most suitable for the job at hand.</p>
+            </article>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
