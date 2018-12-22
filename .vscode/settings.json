@@ -1,0 +1,16 @@
+{
+    "python.condaPath": "\"C:\\Users\\harinsa\\Anaconda3\\Library\\bin\\conda.bat\"",
+    "vim.handleKeys": {
+        "<C-c>": false,
+        "<C-v>": false,
+        "<C-x>": false,
+        "<C-a>": false
+    },
+    "vim.easymotion": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"]
+        }
+    ]
+}

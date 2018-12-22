@@ -1,87 +1,112 @@
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66571933-7"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+<html lang="en">
 
-      gtag('config', 'UA-66571933-7');
-    </script>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66571933-7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-    <meta charset="utf-8">
-    <title>Harin Sanghirun</title>
-    <link rel="stylesheet" href="normalize.css" type="text/css"/>
-    <link rel="stylesheet" href="skeleton.css" type="text/css"/>
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <style>
-      * {
-        font-family: 'Raleway', Arial, Helvetica, sans-serif
-      }
-      #name {
-        font-weight: 300;
-        font-size: 4rem;
-        color: #222;
-      }
+    gtag('config', 'UA-66571933-7');
+  </script>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Your page title here :)</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-      .hero {
-        margin: 9rem 0 1rem 0;
-      }
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      #harin {
-        border-radius: 50%;
-        margin: 0 2rem;
-      }
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-      h2 {
-        font-size: 1.6rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        color: #222;
-      }
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
 
-      ul {
-        line-height: 1.8rem;
-      }
-      
-      a {
-        font-weight: 600;
-      }
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <style>
+    * {
+      font-family: 'Raleway', Arial, Helvetica, sans-serif
+    }
 
-      #about {
-        padding-left: 1rem;
-      }
+    #name {
+      font-weight: 300;
+      font-size: 4rem;
+      color: #222;
+    }
 
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="section hero row">
-        <h1 id="name">Harin Sanghirun</h1>
+    .hero {
+      margin: 9rem 0 1rem 0;
+    }
+
+    #harin {
+      border-radius: 50%;
+      padding: 3rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #222;
+    }
+
+    ul {
+      line-height: 1.8rem;
+    }
+
+    a {
+      font-weight: 600;
+    }
+
+    #about {
+      padding-left: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container">
+    <div class="row" style="margin-top: 25%">
+      <div class="one-third column sidebar">
+        <img id="harin" class="u-max-full-width" src="2018_1128_11222400.jpg" />
       </div>
-      <!-- columns should be the immediate child of a .row -->
-      <div class="row">
-        <div class="three columns sidebar">
-          <img id="harin" class="u-max-full-width" src="2018_1128_11222400.jpg"/>
-          <h2>Links</h2>
-          <ul>
-            <li><a href="https://github.com/harin" target="_blank"><span>github</span></a></li>
-            <li><a href="https://linkedin.com/in/harinsa" target="_blank"><span>linkedin</span></a></li>
-            <li><a href="https://kaggle.com/harinsa" target="_blank"><span>kaggle</span></a></li>
-          </ul>
-        </div>
-        <div class="nine columns" id="about">
-          <h2>About</h2>
-            <article>
-              <p><span style="font-weight: 600;">Master of Data Science</span> student at <span style="text-decoration: underline">Columbia University</span> in the City of New York</p>
-              <p>Former <span style="font-weight: 600;">Fullstack Software Engineer</span> at <a id="jita" href="https://www.jitta.com" target="_blank">Jitta</a>. Responsible for the financial data analysis system.</p>
-              <p>Mostly work with Python and R these days, worked with various other languages that are most suitable for the job at hand.</p>
-            </article>
-        </div>
+      <div class="two-thirds column" >
+        <h1>Harin Sanghirun</h1>
+        <article>
+          <p><span style="font-weight: 600;">Master of Data Science</span> student at <span style="text-decoration: underline">Columbia
+              University</span> in the City of New York</p>
+          <p>Former <span style="font-weight: 600;">Fullstack Software Engineer</span> at <a id="jita" href="https://www.jitta.com"
+              target="_blank">Jitta</a>. Responsible for the financial data analysis system.</p>
+          <p>Mostly work with Python and R these days, worked with various other languages that are most suitable for
+            the job at hand.</p>
+        </article>
+        <div>
+            <h2>Links</h2>
+            <ul>
+              <li><a href="https://github.com/harin" target="_blank"><span>github</span></a></li>
+              <li><a href="https://linkedin.com/in/harinsa" target="_blank"><span>linkedin</span></a></li>
+              <li><a href="https://kaggle.com/harinsa" target="_blank"><span>kaggle</span></a></li>
+            </ul>
+          </div>
       </div>
     </div>
-  </body>
+  </div>
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+
 </html>

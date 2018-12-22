@@ -1,0 +1,470 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style type="text/css">
+            line {
+                stroke: rgba(0,0,0,0.5);
+            }
+
+            div.tooltip {	
+                position: absolute;			
+                text-align: center;			
+                padding: 10px;				
+                font: 12px sans-serif;		
+                background: rgba(255,255,255,0.8);
+                border: 1px solid black;		
+                border-radius: 3px;			
+                pointer-events: none;			
+            }
+
+            .tooltip #title {
+                font-weight: 600;
+            }
+
+            .info .title {
+                font-weight: 600;
+            }
+
+            .paper {
+                fill: black;
+                cursor: pointer; 
+            }
+
+            .edge {
+                fill: none;
+                stroke: black;
+                opacity: 0.4;
+                stroke-width: 1.5px;
+            }
+
+            .info {
+                padding: 10px;
+                margin: 10px;
+                border-radius: 3px;
+                border: 1px solid black;
+                background: white;
+            }
+
+            .sidebar {
+                overflow: scroll;
+                width: 300px;
+                height: 100%;
+                position: fixed;
+                top: 0;
+                right: 0;
+            }
+
+            #input-box {
+                position: fixed;
+                top: 0;
+                left: 0; 
+                background-color: white;
+                padding: 10px;
+                margin: 10px;
+                border: 1px solid black;
+                border-radius: 3px;
+            }
+
+            #input-box a {
+                display: inline;
+            }
+
+            * {
+                font-family: 'Raleway', sans-serif;
+            }
+        </style>
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    </head>
+    <body>
+        <script>
+            const margin = {
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0
+            }
+
+            const width = window.innerWidth
+            const height = window.innerHeight
+            
+            const maxAncestryLevel = 7
+
+            var minCite = 0
+            var maxCite = 100
+            var citationThres = 0
+            var ancestryThres = 3            
+            var filteredLinks = []
+            var papers = []
+
+
+            const zoom = d3.zoom()
+                .scaleExtent([1/4, 4])
+                .on("zoom", () => {
+                    networkGroup.attr("transform", d3.event.transform);
+                    hideTooltip()
+                })
+
+            // Define the div for the tooltip
+            var tooltip = d3.select("body").append("div")	
+                .attr("class", "tooltip")				
+                .style("opacity", 0)
+                .style('width', 200)
+                .style('height', 'auto')
+
+            const svg = d3.select('body').append('svg')
+                .attr('height', height)
+                .attr('width', width)
+                .append('g')
+                .call(zoom)
+
+            svg.append('g').append('rect')
+                .attr('height', height)
+                .attr('width', width)
+                .style('fill', '#fefefe')
+                .on('click', () => {
+                    hideTooltip()
+                    resetFocus()
+                })
+
+            const networkGroup = svg.append('g')
+
+
+
+            // Define div for infomation side bar
+            var sidebar = d3.select('body').append('div')
+                .classed('sidebar', true)
+            
+            tooltip.append('div').attr('id', 'title')
+            tooltip.append('div').attr('id', 'authors')
+            tooltip.append('div').attr('id', 'cited-times')
+
+            function hideTooltip() {
+                tooltip.style('display', 'none')
+            }
+
+            function resetFocus() {
+                resetInfo()
+                networkGroup.selectAll('#focus').remove()
+
+                svg.selectAll('circle')
+                    .on('mouseover', null)
+                    .transition().duration(200)
+                    .style('opacity', null)
+                    .style('fill', null)
+                    .selection().classed('focus', false)
+
+                svg.selectAll('.edge')
+                    .transition().duration(200)
+                    .style('opacity', null)
+                    .style('stroke', null)
+            }
+
+            function resetInfo() {
+                papers.forEach((p) => {
+                    p.__level = null
+                })
+                papers = []
+
+                renderInfo()
+            }
+
+            function addPaper(paper, level) {
+                if (papers.length > 20) return
+                if (!papers.find(p => p.id == paper.id)) {
+                    paper.__level = level
+                    papers.push(paper)
+                }
+            }
+
+            function renderInfo() {
+
+                papers = papers.sort((a,b) => a.__level - b.__level)
+
+                const infoHeight = 200
+                const infoMargin = 20
+                var infobox = sidebar.selectAll('div.info')
+                    .data(papers, (d) => d.id)
+
+                infobox.exit().remove()
+
+                const newBoxes = infobox.enter()
+                    .append('div')
+                        .classed('info', true)
+                newBoxes.append('div').attr('class','title')
+                newBoxes.append('div').attr('class','authors')
+                newBoxes.append('span').attr('class','citations')
+                newBoxes.append('a')
+
+                infobox = newBoxes.merge(infobox)
+                infobox.style('background-color', (d) => colorForLevel(d.__level))
+                infobox.style('display', 'none')
+                    .style('opacity', 0)
+
+                infobox.select('.title').html((d) => `${d.title} (${d.year})`)
+                infobox.select('.authors').html((d) => d.authors.join(', '))
+                infobox.select('.citations').html((d) => `${d.n_citation} citations  ` )
+                infobox.select('a').attr('href', (d) => 
+                    `https://dblp.uni-trier.de/search?q=${encodeURIComponent(d.title + ' ' + d.authors[0])}`
+                    )
+                    .attr('target', '_blank')
+                    .html('link')
+                    .attr('id', d => d.id)
+                
+                infobox.transition()
+                    .duration(500)
+                    .delay((d, i) => 100 + i * 50)
+                    .style('display', 'block')
+                    .style('opacity', 1)
+            }
+
+            function colorForLevel(i) {
+                return d3.schemeYlOrRd[maxAncestryLevel + 2][maxAncestryLevel - 1 - i]
+            }
+            async function main() {
+                const data = await d3.json('paper_graph.json')
+                const linkData = data.links
+                const nodeData = data.nodes
+
+                filteredLinks = linkData
+                
+                const citations = nodeData.map(d => d.n_citation)
+                maxCite = d3.max(citations)
+                minCite = d3.min(citations)
+                
+                const inputBox = d3.select('body').append('div')
+                    .attr('id', 'input-box')
+
+                inputBox.append('label')
+                    .html('Filter edge by paper citation count<br/>')
+                    .style('display', 'none')
+                inputBox.append('input')
+                        .attr('type', 'range')
+                        .attr('min', minCite)
+                        .attr('max', maxCite)
+                        .on('input', function() {
+                            citationThres = Number(this.value)
+                            filterLinks()
+                        })
+                        .style('padding', 10)
+                        .property('value', citationThres)
+                        .style('display', 'none')
+
+
+                inputBox.append('p')
+                        .html('<span style="text-decoration:underline;">Instructions</span><br/>Click on circle to see paper information. <br/> Click on background to reset.</br>Hover over colored circles to see more info.')
+
+
+                const influenceScale = d3.scaleLog()
+                    .domain([minCite, maxCite])
+                    .range([3, 20])
+
+                const sim = d3.forceSimulation(nodeData)
+                    .force('charge', d3.forceManyBody())
+                    .force('collision', d3.forceCollide().radius((d) => influenceScale(d.n_citation)))
+                    .force('center', d3.forceCenter(width / 2, height / 2))
+                    .force('link', d3.forceLink().links(filteredLinks))
+                    .alphaDecay(0.1)
+                    .on('tick', ticked);
+
+                function filterLinks() {
+                    const filteredLinkIds = linkData.filter(d =>
+                        citations[d.target.index] > citationThres
+                    ).map(link => `#l${link.index}`)
+                    if (filteredLinkIds.length == 0) return;
+                    svg.selectAll('.edge').style('display', 'none')
+                    svg.selectAll(filteredLinkIds.join(','))
+                        .style('display', 'block')
+                }
+
+                function renderLinksOnSelection(selection, data) {
+                    var u = selection.data(data)
+                    u = u.enter()
+                        .append('path')
+                        .attr('class', 'edge')
+                        .attr('id', (d) => `l${d.index}`)
+                        .merge(u)
+                        .attr('d', (d) => linkArc(d))
+                        .attr('x1', function(d) {
+                            return d.source.x
+                        })
+                        .attr('y1', function(d) {
+                            return d.source.y
+                        })
+                        .attr('x2', function(d) {
+                            return d.target.x
+                        })
+                        .attr('y2', function(d) {
+                            return d.target.y
+                        }).merge(u)
+
+                    u.exit().remove()
+                    return u
+                }
+                
+                function renderLinks() {
+                    var u = networkGroup
+                        .selectAll('path')
+                    renderLinksOnSelection(u, filteredLinks)
+                }
+                
+                function renderCiter(nodeIndex, level = 0) {
+                    if (level == 0) {
+                        papers = []
+                        svg.selectAll('#focus').remove()
+                    }
+
+                    addPaper(nodeData[nodeIndex], level)
+
+                    const focusLinks = linkData.filter((link) => link.target.index == nodeIndex)
+                        .map((link) => {
+                            if (level < ancestryThres) {
+                                renderCiter(link.source.index, level + 1)
+                            }
+                            return link
+                        })
+                    
+                        
+                    
+                    const sids = focusLinks.map(l => `#c${l.source.id}`)
+
+                        if (focusLinks.length > 0) {
+                            const edgeColor = colorForLevel(level) 
+                            const levelColor = colorForLevel(level + 1) 
+                            
+                            var focus = networkGroup.append('g')
+                                .attr('id', 'focus')
+
+                            var edges = focus.selectAll('path')
+                                .data(focusLinks)
+                                .enter()
+                                .append('path')
+                                    .attr('class', 'edge')
+                                    .attr('id', (d) => `l${d.index}-focus`)
+                                    .attr('d', (d) => linkArc(d))
+                                    .attr('x1', d => d.source.x)
+                                    .attr('y1', d => d.source.y)
+                                    .attr('x2', d => d.target.x)
+                                    .attr('y2', d => d.target.y)
+                                .attr('stroke-dasharray', "100% 100%")
+                                .attr('stroke-dashoffset', '100%')
+                                .style('opacity', 1)
+                                .style('stroke', edgeColor)
+
+                            edges.transition()
+                                .duration(2000)
+                                .delay(level * 300)
+                                .ease(d3.easeLinear)
+                                .attr('stroke-dashoffset', "0%")
+                            
+                            var circles = focus
+                                .append('g')
+                                    .attr('id', 'level-' + level)
+                                .selectAll('circle')
+                                .data(focusLinks.map(l => l.source))
+                                .enter()
+                                .append('circle')
+                                    .attr('class', 'paper')
+                                    .style('fill', levelColor)
+                                    .style('opacity', 0)
+                                    .attr('id', (d) => `c${d.id}`)
+                                    .attr('r', (d) => influenceScale(d.n_citation))
+                                    .attr('cx', d => d.x)
+                                    .attr('cy', d => d.y)
+                                    .on('click', paperNodeClickHandler)
+                                .on('mouseover', (d) => showPaperTooltip(d))
+
+                            circles.transition()
+                                .delay(level * 300)
+                                .duration(500)
+                                    .style('opacity', 1)
+                        }
+
+                    if (level == 0) {
+                        renderInfo()
+                    }
+                }
+
+                function showPaperTooltip(d) {
+                    tooltip.transition()		
+                        .duration(200)
+                        .style('display', 'block')
+                        .style("opacity", .9)
+                    tooltip.select('#title').html(`${d.title} (${d.year})`)
+                    tooltip.select('#authors').html(d.authors.join(', '))
+                    tooltip.select('#cited-times').html(`${d.n_citation} citations` )
+                    tooltip
+                        .style("left", (d3.event.pageX + 15 ) + "px")		
+                        .style("top", (d3.event.pageY ) + "px")
+
+                    // tooltip.select('a').attr('href', () => 
+                    //         `https://dblp.uni-trier.de/search?q=${encodeURIComponent(d.title + ' ' + d.authors[0])}`
+                    //     )
+                    //     .attr('target', '_blank')
+                    //     .html('link')
+                    //     .attr('id', () => d.id)
+                }
+
+                function paperNodeClickHandler(d) {
+                    sim.stop()
+                    showPaperTooltip(d)
+                    
+                    networkGroup.selectAll('circle')
+                        .style('opacity', 0.1)
+                        .style('fill', null)
+                        .on('mouseover', null)
+                    
+                    networkGroup.selectAll('.edge')
+                        .style('stroke', 'black')
+                        .style('stroke', '#efefef')
+                        
+                    resetInfo()
+                    renderCiter(d.index)
+
+                    d3.select(`#c${d.id}`)
+                        .on('mouseover', (d) => showPaperTooltip(d))
+                        .transition()
+                        .duration(100)
+                            .style('fill', colorForLevel(0)) 
+                            .style('opacity', null)
+                }
+
+                function renderNodes() {
+                    const u = networkGroup
+                        .selectAll('circle')
+                        .data(nodeData)
+                    
+                    const r = 5
+                    u.enter()
+                        .append('circle')
+                        .attr('class', 'paper')
+                        .attr('id', (d) => `c${d.id}`)
+                        .attr('r', (d) => influenceScale(d.n_citation))
+                        .merge(u)
+                        .attr('cx', d => d.x)
+                        .attr('cy', d => d.y)
+                        .on('click', paperNodeClickHandler)
+
+                    u.exit().remove()
+                }
+
+                function ticked() {
+                    renderLinks()
+                    renderNodes()
+                }
+
+                function line(d) {
+                    return `M${d.target.x},${d.target.y} L${d.source.x},${d.source.y}`
+                }
+
+                function linkArc(d) {
+                    var dx = d.target.x - d.source.x,
+                        dy = d.target.y - d.source.y,
+                        dr = Math.sqrt(dx * dx + dy * dy);
+                    return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + d.source.x + "," + d.source.y;
+                }
+            }
+            main()
+        </script>
+    </body>
+</html>
