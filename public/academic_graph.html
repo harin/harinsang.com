@@ -58,7 +58,7 @@
                 position: fixed;
                 top: 0;
                 left: 0; 
-                background-color: white;
+                background-color: rgba(255,255,255,0.8);
                 padding: 10px;
                 margin: 10px;
                 border: 1px solid black;
@@ -77,6 +77,16 @@
 
     </head>
     <body>
+        <div id="input-box">
+            <h1 style="margin-bottom: 0px">Academic Paper Reference Network</h1> <br/>
+            <p style="margin: 0px">Visualization as part of a data exploratory and visualization project<br/>
+                on the trend in computer science academic paper. The full project</br>
+                and report can be found <a href="https://github.com/harin/arxiv-data-exploration" target="_blank">here</a>.</p>
+            <span style="text-decoration:underline;">Instructions</span><br/>
+            Click on circle to see paper information. <br/> 
+            Click on background to reset.</br>
+            Hover over colored circles to see more info.
+        </div>
         <script>
             const margin = {
                 left: 0,
@@ -232,27 +242,24 @@
                 maxCite = d3.max(citations)
                 minCite = d3.min(citations)
                 
-                const inputBox = d3.select('body').append('div')
-                    .attr('id', 'input-box')
+                const inputBox = d3.select('#input-box')
 
-                inputBox.append('label')
-                    .html('Filter edge by paper citation count<br/>')
-                    .style('display', 'none')
-                inputBox.append('input')
-                        .attr('type', 'range')
-                        .attr('min', minCite)
-                        .attr('max', maxCite)
-                        .on('input', function() {
-                            citationThres = Number(this.value)
-                            filterLinks()
-                        })
-                        .style('padding', 10)
-                        .property('value', citationThres)
-                        .style('display', 'none')
+                // inputBox.append('label')
+                //     .html('Filter edge by paper citation count<br/>')
+                //     .style('display', 'none')
+                // inputBox.append('input')
+                //         .attr('type', 'range')
+                //         .attr('min', minCite)
+                //         .attr('max', maxCite)
+                //         .on('input', function() {
+                //             citationThres = Number(this.value)
+                //             filterLinks()
+                //         })
+                //         .style('padding', 10)
+                //         .property('value', citationThres)
+                //         .style('display', 'none')
 
 
-                inputBox.append('p')
-                        .html('<span style="text-decoration:underline;">Instructions</span><br/>Click on circle to see paper information. <br/> Click on background to reset.</br>Hover over colored circles to see more info.')
 
 
                 const influenceScale = d3.scaleLog()
