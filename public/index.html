@@ -67,6 +67,16 @@
       color: #222;
     }
 
+    li h3 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: inline;
+    }
+
+    li p {
+      margin: 10px 0px 10px 20px;
+    }
+
     ul {
       line-height: 1.8rem;
     }
@@ -81,7 +91,7 @@
 
     #session-count {
       position: absolute;
-      top:0;
+      top: 0;
       padding-top: 10px;
       left: 0;
       z-index: -100
@@ -92,6 +102,7 @@
       stroke-width: 1.5;
       fill: none;
     }
+
     #viewing-label {
       position: absolute;
       top: 10px;
@@ -99,7 +110,7 @@
       border: 1px solid red;
       color: red;
       padding: 5px;
-      background: rgba(255,255,255,0.8)
+      background: rgba(255, 255, 255, 0.8)
     }
   </style>
 </head>
@@ -112,8 +123,14 @@
     <div class="row" style="margin-top: 25%">
       <div class="one-third column sidebar">
         <img id="harin" class="u-max-full-width" src="2018_1128_11222400.jpg" />
+        <div>
+          <h2>Links</h2>
+            <a class="button" href="https://github.com/harin" target="_blank"><span>github</span></a>
+            <a class="button" href="https://linkedin.com/in/harinsa" target="_blank"><span>linkedin</span></a>
+            <a class="button" href="https://kaggle.com/harinsa" target="_blank"><span>kaggle</span></a>
+        </div>
       </div>
-      <div class="two-thirds column" >
+      <div class="two-thirds column">
         <h1>Harin Sanghirun</h1>
         <article>
           <p><span style="font-weight: 600;">Master of Data Science</span> student at <span style="text-decoration: underline">Columbia
@@ -123,15 +140,25 @@
           <p>Mostly work with Python and R these days, worked with various other languages that are most suitable for
             the job at hand.</p>
         </article>
+
         <div>
-            <h2>Links</h2>
-            <ul>
-              <li><a href="https://github.com/harin" target="_blank"><span>github</span></a></li>
-              <li><a href="https://linkedin.com/in/harinsa" target="_blank"><span>linkedin</span></a></li>
-              <li><a href="https://kaggle.com/harinsa" target="_blank"><span>kaggle</span></a></li>
-            </ul>
-          </div>
+          <h2 style="margin-top: 8rem;  ">Projects</h2>
+          <ul>
+            <li>
+              <h3>Research Paper Citation Analysis</h3>
+              <p>Exploratory data visualization and analysis of academic papers in the field of computer science to
+                explore the trends and relationships between papers.</p>
+              <ul>
+
+                <li><a target="_blank" href="https://github.com/harin/arxiv-data-exploration/blob/master/final_project_static.pdf">Report</a></li>
+                <li><a target="_blank" href="/academic_graph.html">Interactive Visualization</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+
+
     </div>
   </div>
   <!-- End Document
