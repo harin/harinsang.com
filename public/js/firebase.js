@@ -23,30 +23,43 @@ function registerSession() {
     setInterval(() => {
         let time = dateToKey(new Date())
         const currentTimeRef = database.ref(`sessions/${time}`)
-        currentTimeRef.transaction(function(count) {
+        currentTimeRef.transaction(function (count) {
             if (count) {
                 return count + 1
             }
             return 1
         })
-    }, 1000) // 10 seconds
-
+    }, 1000) // 1 seconds
 }
 
 function retrievePreviousSection() {
     database.ref('sessions').limitToLast(60)
-        .on('value', function(snapshot) {
+        .once('value', function (snapshot) {
             snapshot.forEach(child => {
                 sess[child.key] = child.val()
             })
             setupData()
-            updateData()
+            const lastKey = data[data.length - 1].key
+            const sessRef = database.ref('sessions')
+                .orderByKey()
+                .startAt(lastKey)
+                sessRef.on('child_added', (snapshot) => {
+                    sess[snapshot.key] = snapshot.val()
+                    // console.log('added', snapshot.key, snapshot.val())
+                })
+                sessRef.on('child_changed', (snapshot) => {
+                    // console.log('update', snapshot.key, snapshot.val())
+                    sess[snapshot.key] = snapshot.val()
+                })
         })
 }
+
 
 function setupData() {
     const now = new Date()
     now.setSeconds(now.getSeconds() - 1) // wait for data to stabilize
+
+    // initialize data
     const times = Array(60).fill(1).map((_, i) => {
         const pre = new Date(now)
         pre.setSeconds(pre.getSeconds() - i)
@@ -58,94 +71,98 @@ function setupData() {
         const val = sess[key] || 0
         return { key, val }
     }).reverse()
-    // console.log('data', data)
 }
 
 var svg = null
 const margin = {
-    top: 10,
+    top: 30,
     bottom: 30,
     left: 0,
     right: 0
 }
 
+var xScale = null
+var yScale = null
+var path = null
+var line = null
+var text = null
+
 function setupD3() {
     svg = d3.select('body')
         .append('svg')
-            .attr('id', 'session-count')
-            .attr('width', window.innerWidth)
-            .attr('height', window.innerHeight/4)
-}
+        .attr('id', 'session-count')
 
-function updateData() {
-    const xScale = d3.scaleLinear()
-        .domain([0, 60])
-        .range([margin.left + 0, Number(svg.attr('width')) - margin.right])
+    path = svg.append('g')
+        .append('path')
+            .datum(data)
+            .attr('id', 'session-line')
 
-    const maxCount = d3.max(data, d => d.val)
-
-    const yScale = d3.scaleLinear()
-        .domain([0, maxCount])
-        .range([Number(svg.attr('height')) - margin.bottom, 0 + margin.top])
-
-    const line = d3.line()
-        .x((d,i) => xScale(i))
+    line = d3.line()
+        .x((d, i) => xScale(i))
         .y(d => yScale(d.val))
-        .curve(d3.curveBasis)
-
-    let ref = svg.selectAll('path')
-        .data([data])
-
-        ref = ref.enter()
-            .append('path')
-                .attr('d', line)
-                .style('fill', 'none')
-                .style('stroke', 'black')
-        .merge(ref)
-
-        ref.transition()
-            .delay(1000)
-            .duration(100)
-                .attr('d', line)
-                .attr('transform', `translate(0, 0)`)
-                .style('stroke', 'black')
-
-    let text = svg.selectAll('text')
-        .data([data[data.length-1]])
-
-    text.enter()
-        .append('text')
-            .style('font-family', 'Raleway')
-            .style('font-size', '20')
-        .merge(text)
-            .attr('x', svg.attr('width') - 15)
-            .attr('y', (d) => {
-                return yScale(d.val) + 10
-            })
-            .html(d => d.val)
+        .curve(d3.curveNatural)
     
+    text = d3.select('body')
+        .append('div')
+        .attr('id', 'viewing-label')
 
-        
-
-
-        
+    resizeSVG()
 }
 
 function resizeSVG() {
     svg.attr('width', window.innerWidth)
-        .attr('height', window.innerHeight/4)
-    updateData()
+        .attr('height',170)
+
+    xScale = d3.scaleLinear()
+        .domain([0, 60])
+        .range([margin.left + 0, Number(svg.attr('width')) + 40 - margin.right])
+
+    yScale = d3.scaleLinear()
+        .domain([0, 2])
+        .range([Number(svg.attr('height')) - margin.bottom, 0 + margin.top])
+
+
+
 }
 
 registerSession()
 retrievePreviousSection()
-setupData()
-document.addEventListener('DOMContentLoaded', function(event) { 
+
+var duration = 1000
+
+document.addEventListener('DOMContentLoaded', function (event) {
     setupD3()
-    updateData()
-    window.addEventListener('resize', function(event) {
+    window.addEventListener('resize', function (event) {
         resizeSVG()
     })
+
+    setInterval(() => {
+        const key = dateToKey(new Date())
+        let val = sess[key]
+        if (!val) {
+            console.log('cant find', val, key, sess[key])
+            val = 0
+        }
+
+        data.push({ key, val })
+
+        text.html(`${val} viewing`)
+
+        yScale.domain([0, d3.max(data, d => d.val)])
+
+        svg.select('#session-line')
+            .datum(data)
+            .attr('d', line)
+            .attr('transform', null)
+
+        path.interrupt()
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(duration)
+            .attr('transform', `translate(${xScale(-1)})`)
+
+        data = data.slice(data.length - 60, data.length)
+    }, duration)
 })
 
 
