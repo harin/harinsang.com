@@ -120,9 +120,6 @@ function resizeSVG() {
     yScale = d3.scaleLinear()
         .domain([0, 2])
         .range([Number(svg.attr('height')) - margin.bottom, 0 + margin.top])
-
-
-
 }
 
 registerSession()
@@ -138,11 +135,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     setInterval(() => {
         const key = dateToKey(new Date())
-        let val = sess[key]
-        if (!val) {
-            console.log('cant find', val, key, sess[key])
-            val = 0
-        }
+        let val = sess[key] || 0
 
         data.push({ key, val })
 
