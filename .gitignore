@@ -1,2 +1,5 @@
 client.json
-.*
+.firebase
+.firebaserc
+.vscode
+firebase.json
