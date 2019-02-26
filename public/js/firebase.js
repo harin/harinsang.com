@@ -45,10 +45,8 @@ function retrievePreviousSection() {
                 .startAt(lastKey)
                 sessRef.on('child_added', (snapshot) => {
                     sess[snapshot.key] = snapshot.val()
-                    // console.log('added', snapshot.key, snapshot.val())
                 })
                 sessRef.on('child_changed', (snapshot) => {
-                    // console.log('update', snapshot.key, snapshot.val())
                     sess[snapshot.key] = snapshot.val()
                 })
         })
